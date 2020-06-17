@@ -48,6 +48,7 @@ router.post('/login', (req, res) => {
           'user': {
             'user_id': user.id,
             'email': user.email,
+            'gradientId': user.gradient_id,
           },
           'tokens': {
             'access': jwt,

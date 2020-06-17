@@ -9,9 +9,10 @@ router.get('/', (req, res) => {
   handleResponse(res, { 'message': 'OK' });
 });
 
-router.use('/auth', require('./auth'));
-router.use('/posts', requireAuth, require('./posts'));
-router.use('/users', requireAuth, require('./users'));
+router.use('/auth',                   require('./auth'));
+router.use('/users',     requireAuth, require('./users'));
+router.use('/gradients', requireAuth, require('./gradients'));
+router.use('/entries',   requireAuth, require('./entries'));
 
 router.use(errorHandler);
 

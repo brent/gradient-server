@@ -26,7 +26,7 @@ class User {
   static get(id) {
     return new Promise((resolve, reject) => {
       const findByIdSQL = `
-        SELECT id, username
+        SELECT id, username, gradient_id
         FROM users
         WHERE id = $1
         LIMIT 1;
@@ -71,7 +71,7 @@ class User {
         const createUserSQL = `
           INSERT INTO users(username, email, password)
           VALUES ($1, $2, $3)
-          RETURNING id, username;
+          RETURNING id, username, gradient_id;
         `;
 
         const query = {
