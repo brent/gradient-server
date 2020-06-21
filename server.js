@@ -5,12 +5,27 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const Mailer = require('./mail');
+const Cron = require('cron').CronJob;
+
+let job = new Cron(
+  // mintue, hour, day, month, day of week
+  // 0 21 * * * # 9pm
+  '0 21 * * *',
+  () => {
+    Mailer.sendDailyEmail();
+  },
+  null,
+  true,
+  'America/New_York',
+)
+
 app.disable('x-powered-by');
 
-const morgan = require('morgan');
 app.use(morgan('dev'));
 
-const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
