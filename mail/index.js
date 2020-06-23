@@ -59,7 +59,7 @@ class Mailer {
       try {
         const users = await User.getAll();
         users.forEach(user => {
-          mailer.sendEmail()
+          mailer.sendEmail(user)
             .then(() => console.log(`email sent to ${user.username}`))
             .catch(err => console.log(err));
         });
