@@ -1,9 +1,7 @@
 "use strict";
 
 const handleResponse = function(res, data) {
-  res.status(200).json({
-    'data': data || { },
-  });
+  res.status(200).json(data);
 };
 
 const errorHandler = function(err, req, res, next) {
