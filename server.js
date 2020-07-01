@@ -26,7 +26,7 @@ let job = new Cron(
 
 app.disable('x-powered-by');
 
-app.use(morgan('dev'));
+app.use(morgan('---\n:date[clf]\n:method :url :status :response-time ms - :res[content-length]'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
