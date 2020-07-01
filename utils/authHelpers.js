@@ -11,6 +11,7 @@ const requireAuth = (req, res, next) => {
       next();
     })
     .catch(err => {
+      console.log(`ERROR: ${err.name}`);
       err.statusCode = 403;
       next(err);
     });
