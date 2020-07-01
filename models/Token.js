@@ -74,25 +74,31 @@ class Token {
     });
   }
 
-  static updateRefreshToken(userId, refreshToken) {
+  static updateRefreshToken(accessToken, refreshToken) {
     return new Promise((resolve, reject) => {
+      const userId = jwt.decode(accessToken).userId;
       const newToken = Token.generateRefreshToken();
 
       const updateRefreshTokenSQL = `
         UPDATE tokens
         SET token = $1
-        WHERE user_id = $2 
-        AND token = $3
-        RETURNING token;
+        WHERE token = $2
+        AND user_id = $3
+        RETURNING token, user_id;
       `;
 
       const query = {
         text: updateRefreshTokenSQL,
-        values: [newToken, userId, refreshToken],
+        values: [newToken, refreshToken, userId],
       };
 
       db.query(query)
-        .then(res => resolve(res.rows[0]))
+        .then(res => {
+          if (res.rows === []) {
+            reject(new Error('Refresh token not found'));
+          }
+          resolve(res.rows[0])
+        })
         .catch(err => reject(err));
     });
   }

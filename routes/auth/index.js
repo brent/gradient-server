@@ -46,8 +46,8 @@ router.post('/login', (req, res) => {
         const jwt = Token.generateAccessToken(user);
         const data = {
           'user': {
-            'user_id': user.id,
-            'email': user.email,
+            'id': user.id,
+            'username': user.username,
             'gradientId': user.gradient_id,
           },
           'tokens': {
@@ -64,15 +64,15 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/token', (req, res) => {
-  const userId = req.body.userId;
+  const oldAccessToken = req.body.access;
   const oldRefreshToken = req.body.refreshToken;
 
-  Token.updateRefreshToken(userId, oldRefreshToken)
-    .then((newRefreshToken) => {
-      const jwt = Token.generateAccessToken({ id: userId, username: null});
+  Token.updateRefreshToken(oldAccessToken, oldRefreshToken)
+    .then(({ token, user_id }) => {
+      const jwt = Token.generateAccessToken({ id: user_id });
       const data = {
         'access': jwt,
-        'refresh': newRefreshToken,
+        'refresh': token,
       };
 
       handleResponse(res, data);
