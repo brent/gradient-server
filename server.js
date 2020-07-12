@@ -12,6 +12,7 @@ const cors = require('cors');
 const Mailer = require('./mail');
 const Cron = require('cron').CronJob;
 
+/*
 let job = new Cron(
   // mintue, hour, day, month, day of week
   // 0 21 * * * # 9pm
@@ -23,6 +24,7 @@ let job = new Cron(
   true,
   'America/New_York',
 )
+*/
 
 app.disable('x-powered-by');
 
