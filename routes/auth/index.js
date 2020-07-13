@@ -8,7 +8,6 @@ const requireAuth = require('../../utils/authHelpers').requireAuth;
 
 router.post('/signup', (req, res) => {
   const user = {
-    username: req.body.username,
     email: req.body.email,
     password: req.body.password,
   };
@@ -35,7 +34,7 @@ router.post('/signup', (req, res) => {
 
 router.post('/login', (req, res) => {
   const user = {
-    username: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   };
 
@@ -47,7 +46,7 @@ router.post('/login', (req, res) => {
         const data = {
           'user': {
             'id': user.id,
-            'username': user.username,
+            'email': user.email,
             'gradientId': user.gradient_id,
           },
           'tokens': {

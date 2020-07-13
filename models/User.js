@@ -9,7 +9,7 @@ class User {
   static getAll() {
     return new Promise((resolve, reject) => {
       const getAllSQL = `
-        SELECT id, username
+        SELECT id, email
         FROM users;
       `;
 
@@ -26,7 +26,7 @@ class User {
   static get(id) {
     return new Promise((resolve, reject) => {
       const findByIdSQL = `
-        SELECT id, username, gradient_id
+        SELECT id, email, gradient_id
         FROM users
         WHERE id = $1
         LIMIT 1;
@@ -43,18 +43,18 @@ class User {
     });
   }
 
-  static findByUsername(username) {
+  static findByEmail(email) {
     return new Promise((resolve, reject) => {
-      const findByUsernameSQL = `
+      const findByEmailSQL = `
         SELECT *
         FROM users
-        WHERE username = $1
+        WHERE email = $1
         LIMIT 1;
       `;
 
       const query = {
-        text: findByUsernameSQL,
-        values: [username],
+        text: findByEmailSQL,
+        values: [email],
       }
 
       db.query(query)
@@ -64,19 +64,19 @@ class User {
   }
 
   static create(params) {
-    const { username, email, password } = params;
+    const { email, password } = params;
 
     return new Promise((resolve, reject) => {
       User.generateHash(password).then(hash => {
         const createUserSQL = `
-          INSERT INTO users(username, email, password)
-          VALUES ($1, $2, $3)
-          RETURNING id, username, gradient_id;
+          INSERT INTO users(email, password)
+          VALUES ($1, $2)
+          RETURNING id, email, gradient_id;
         `;
 
         const query = {
           text: createUserSQL,
-          values: [username, email, hash],
+          values: [email, hash],
         };
 
         db.query(query)
@@ -87,23 +87,22 @@ class User {
   }
 
   static update(params) {
-    const { id, username, email, password } = params;
+    const { id, email, password } = params;
 
     return new Promise((resolve, reject) => {
       User.generateHash(password).then(hash => {
         const updateUserSQL = `
           UPDATE users
           SET 
-            username = $2,
-            email = $3,
-            password = $4
+            email = $2,
+            password = $3
           WHERE id = $1
           RETURNING id, username;
         `;
 
         const query = {
           text: updateUserSQL,
-          values: [id, username, email, hash]
+          values: [id, email, hash]
         }
 
         db.query(query)
@@ -130,10 +129,10 @@ class User {
   }
 
   static comparePassword(params) {
-    const { username, password } = params;
+    const { email, password } = params;
 
     return new Promise((resolve, reject) => {
-      User.findByUsername(username)
+      User.findByEmail(email)
         .then(user => {
           bcrypt.compare(password, user.password, (err, res) => {
             if (res == true) {
