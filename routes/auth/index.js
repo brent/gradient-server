@@ -3,7 +3,9 @@
 const router = require('express').Router();
 const User = require('../../models/User');
 const Token = require('../../models/Token');
-const handleResponse = require('../../utils/routeHelpers').handleResponse;
+const routeHelpers = require('../../utils/routeHelpers');
+const handleResponse = routeHelpers.handleResponse;
+const customResponse = routeHelpers.customResponse;
 const requireAuth = require('../../utils/authHelpers').requireAuth;
 
 router.post('/signup', (req, res) => {
@@ -76,7 +78,10 @@ router.post('/token', (req, res) => {
 
       handleResponse(res, data);
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      customResponse(res, 400, { 'status': 'unauthorized' });
+      console.log(err);
+    });
 });
 
 module.exports = router;
