@@ -59,7 +59,28 @@ router.post('/login', (req, res) => {
 
         handleResponse(res, data);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        Token.saveTokenForUser(user.id)
+          .then(res => res.token)
+          .then(refreshToken => {
+            const jwt = Token.generateAccessToken(user);
+            const data = {
+              'user': {
+                'id': user.id,
+                'email': user.email,
+                'gradientId': user.gradient_id,
+              },
+              'tokens': {
+                'access': jwt,
+                'refresh': refreshToken,
+              },
+            };
+
+            handleResponse(res, data);
+          })
+          .catch(err => console.log(err));
+        console.log(err)
+      });
   })
   .catch(err => console.log(err));
 });

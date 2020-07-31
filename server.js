@@ -33,7 +33,6 @@ app.use(morgan('---\n:date[clf]\n:method :url :status :response-time ms - :res[c
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(cors());
 
 app.use('/api/v1', require('./routes'));
 
