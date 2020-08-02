@@ -75,8 +75,9 @@ class Token {
   }
 
   static updateRefreshToken(accessToken, refreshToken) {
+    const { userId } = jwt.decode(accessToken);
+
     return new Promise((resolve, reject) => {
-      const userId = jwt.decode(accessToken).userId;
       const newToken = Token.generateRefreshToken();
 
       const updateRefreshTokenSQL = `
@@ -94,7 +95,7 @@ class Token {
 
       db.query(query)
         .then(res => {
-          if (res.rows === []) {
+          if (res.rows.length === 0) {
             reject(new Error('Refresh token not found'));
           }
           resolve(res.rows[0])

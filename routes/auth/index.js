@@ -5,7 +5,7 @@ const User = require('../../models/User');
 const Token = require('../../models/Token');
 const routeHelpers = require('../../utils/routeHelpers');
 const handleResponse = routeHelpers.handleResponse;
-const customResponse = routeHelpers.customResponse;
+const errorHandler = routeHelpers.errorHandler;
 const requireAuth = require('../../utils/authHelpers').requireAuth;
 
 router.post('/signup', (req, res) => {
@@ -59,7 +59,28 @@ router.post('/login', (req, res) => {
 
         handleResponse(res, data);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        Token.saveTokenForUser(user.id)
+          .then(res => res.token)
+          .then(refreshToken => {
+            const jwt = Token.generateAccessToken(user);
+            const data = {
+              'user': {
+                'id': user.id,
+                'email': user.email,
+                'gradientId': user.gradient_id,
+              },
+              'tokens': {
+                'access': jwt,
+                'refresh': refreshToken,
+              },
+            };
+
+            handleResponse(res, data);
+          })
+          .catch(err => console.log(err));
+        console.log(err)
+      });
   })
   .catch(err => console.log(err));
 });
@@ -79,8 +100,10 @@ router.post('/token', (req, res) => {
       handleResponse(res, data);
     })
     .catch(err => {
-      customResponse(res, 400, { 'status': 'unauthorized' });
-      console.log(err);
+      errorHandler({
+        'statusCode': 403,
+        'message': err.message,
+      }, req, res);
     });
 });
 
