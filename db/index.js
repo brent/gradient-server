@@ -105,22 +105,21 @@ const createGradientsTableQuery = `
   );
 `;
 
+const handleResponse = (res) => {
+  console.log(res);
+};
+
 const handleError = (err) => {
-  switch (err.code) {
-    case '42723':
-      console.log('trigger_update_timestamp() already exists');
-      break;
-    case '42710':
-      console.log('update trigger already set');
-      break;
-    case '42P07':
-      // table exists
-      console.log(err.message);
-      break;
-    default:
-      console.log(err);
-  }
+  console.error(err.message);
 }
+
+const handleAllSettled = (res) => {
+  res.forEach(r => {
+    if (r.status === 'rejected') {
+      handleError({ code: r.reason.code, message: r.reason.message });
+    }
+  })
+};
 
 const createTriggerFunction = () => {
   return new Promise((resolve, reject) => {
@@ -202,22 +201,20 @@ const notesTrigger = () => {
   });
 }
 
-// THIS MOSTLY WORKS
-// returns annoying objects when there are dupes
 createTriggerFunction()
   .catch(err => handleError(err))
   .then(createUsersTable)
-  .then(res => console.log(res))
+  .then(res => handleResponse(res))
   .catch(err => handleError(err))
   .then(() => {
     return Promise.allSettled([createTokensTable(), createEntriesTable(), createGradientsTable()])
-      .then(res => res.forEach(r => console.log(r)))
+      .then(res => handleAllSettled(res))
   })
   .then(() => createNotesTable())
   .catch(err => handleError(err))
   .then(() => {
     return Promise.allSettled([usersTrigger(), tokensTrigger(), entriesTrigger(), notesTrigger()])
-      .then(res => res.forEach(r => console.log(r)))
+      .then(res => handleAllSettled(res))
   })
   .catch(err => handleError(err));
 
