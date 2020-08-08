@@ -106,11 +106,11 @@ const createGradientsTableQuery = `
 `;
 
 const handleResponse = (res) => {
-  console.log(res);
+  process.env.NODE_ENV !== 'test' ? console.log(res) : null;
 };
 
 const handleError = (err) => {
-  console.error(err.message);
+  process.env.NODE_ENV !== 'test' ? console.error(err.message) : null;
 }
 
 const handleAllSettled = (res) => {
