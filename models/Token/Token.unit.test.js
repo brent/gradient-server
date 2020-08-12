@@ -85,4 +85,24 @@ describe('Token', () => {
       expect(decodedToken.iat).toBeDefined();
     });
   });
+
+  describe('findTokenForUser()', () => {
+    it('should be a function', () => {
+      expect(typeof Token.findTokenForUser).toBe('function');
+    });
+
+    it('should call db.query() with user id', async () => {
+      db.query.mockResolvedValue({ rows: [Promise.resolve(tokenData.token)] });
+      const response = await Token.findTokenForUser(tokenData.id);
+      const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
+      const dbQueryQueryValues = dbQueryCall[0]['values'];
+      expect(dbQueryQueryValues[0]).toBe(tokenData.user_id);
+    });
+  });
+
+  describe('updateRefreshToken()', () => {
+    it('should be a function', () => {
+      expect(typeof Token.updateRefreshToken).toBe('function');
+    });
+  });
 });
