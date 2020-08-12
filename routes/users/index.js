@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  User.get(req.params.id)
+  User.getOne(req.params.id)
     .then(data => handleResponse(res, data))
     .catch(err => console.log(err));
 });

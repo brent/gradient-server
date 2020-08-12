@@ -3,9 +3,9 @@ const Entry = require('../../models/Entry');
 const handleResponse = require('../../utils/routeHelpers').handleResponse;
 
 router.get('/', (req, res) => {
-  const userId = req.decoded.userId;
+  const userId = req.decoded.id;
 
-  Entry.getAllForUser(userId)
+  Entry.getAll(userId)
     .then(data => handleResponse(res, data))
     .catch(err => console.log(err));
 });
@@ -19,7 +19,7 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   const userId = req.decoded.userId;
 
-  Entry.createForUser(userId, req.body)
+  Entry.create(userId, req.body)
     .then(data => handleResponse(res, data))
     .catch(err => console.log(err));
 });

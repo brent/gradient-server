@@ -15,7 +15,7 @@ router.post('/signup', (req, res) => {
   };
 
   User.create(user).then(user => {
-    Token.saveTokenForUser(user.id)
+    Token.save(user.id)
       .then((res) => res.token)
       .then((refreshToken) => {
         const jwt = Token.generateAccessToken(user);
@@ -60,7 +60,7 @@ router.post('/login', (req, res) => {
         handleResponse(res, data);
       })
       .catch(err => {
-        Token.saveTokenForUser(user.id)
+        Token.save(user.id)
           .then(res => res.token)
           .then(refreshToken => {
             const jwt = Token.generateAccessToken(user);
