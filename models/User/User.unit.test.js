@@ -161,4 +161,28 @@ describe('User', () => {
       expect(typeof User.comparePassword).toBe('function');
     });
   });
+
+  describe('remove()', () => {
+    it('should be a function', () => {
+      expect(typeof User.remove).toBe('function');
+    });
+
+    it('should call db.query() with user id', async () => {
+      db.query.mockResolvedValue(Promise.resolve(1));
+      const res = await User.remove({ id: userData.id });
+      const removeCall = db.query.mock.calls[db.query.mock.calls.length - 1];
+      const removeCallValues = removeCall[0]['values'];
+      expect(removeCallValues[0]).toBe(1);
+    });
+
+    it('should throw an error', async () => {
+      const errorMessage = 'could not delete user';
+      db.query.mockRejectedValue(new Error(errorMessage));
+      try {
+        await User.remove({ id: userData.id });
+      } catch (error) {
+        expect(error.message).toBe(errorMessage);
+      }
+    });
+  });
 });

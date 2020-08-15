@@ -141,6 +141,24 @@ function comparePassword({ email, password }) {
   });
 }
 
+function remove({ id }) {
+  return new Promise((resolve, reject) => {
+    const removeSQL = `
+      DELETE FROM users
+      WHERE id = $1;
+    `;
+
+    const query = {
+      text: removeSQL,
+      values: [id],
+    };
+
+    db.query(query)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+}
+
 module.exports = {
   getOne,
   findByEmail,
@@ -149,4 +167,5 @@ module.exports = {
   update,
   getAll,
   comparePassword,
+  remove,
 };
