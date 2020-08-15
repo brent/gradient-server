@@ -18,7 +18,6 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   const params = {
-    username: req.body.username,
     email: req.body.email,
     password: req.body.password,
   };
@@ -31,7 +30,6 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const params = { 
     id: req.params.id, 
-    username: req.body.username,
     email: req.body.email,
     password: req.body.password,
   };
