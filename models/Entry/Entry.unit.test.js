@@ -28,12 +28,12 @@ describe('Entry', () => {
       expect(dbQueryQueryValues[0]).toBe(entryData.user_id);
     });
 
-    it('should call db.query() with null if one is not supplied', async () => {
+    it('should call db.query() with no id if not supplied', async () => {
       db.query.mockResolvedValue({ rows: [Promise.resolve(entryData)] });
       const res = await Entry.getAll();
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
-      expect(dbQueryQueryValues[0]).toBe(null);
+      expect(dbQueryQueryValues).not.toBeDefined();
     });
 
     it('should return an error when something goes wrong', async () => {

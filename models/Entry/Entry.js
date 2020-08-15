@@ -1,11 +1,12 @@
 const db = require('../../db');
 const tableName = 'entries';
 
-// const Note = require('./Note');
+const Note = require('../Note');
 
 function getAll(userId = null) {
   return new Promise((resolve, reject) => {
     let querySQL;
+    let query;
 
     if (userId) {
       querySQL = `
@@ -13,9 +14,13 @@ function getAll(userId = null) {
         FROM entries
         LEFT JOIN notes ON entries.id = notes.entry_id
         WHERE entries.user_id = $1
-        ORDER BY entries.created_at DESC
-        RETURNING *;
+        ORDER BY entries.created_at DESC;
       `;
+
+      query = {
+        text: querySQL,
+        values: [userId],
+      };
     } else {
       querySQL = `
         SELECT entries.*, notes.content
@@ -24,12 +29,11 @@ function getAll(userId = null) {
         ORDER BY entries.created_at DESC
         RETURNING *;
       `;
-    }
 
-    const query = {
-      text: querySQL,
-      values: [userId],
-    };
+      query = {
+        text: querySQL,
+      };
+    }
 
     db.query(query)
       .then(res => resolve(res.rows))
@@ -92,47 +96,6 @@ function create({ userId, color, sentiment, noteContent = null }) {
     }
   });
 }
-
-/*
-static createForUser(userId, params) {
-  const { color, sentiment, noteContent } = params;
-
-  const createForUserSQL = `
-    INSERT INTO entries (user_id, color, sentiment)
-    VALUES ($1, $2, $3)
-    RETURNING *;
-  `;
-
-  const query = {
-    text: createForUserSQL,
-    values: [userId, color, sentiment],
-  };
-
-
-  return new Promise((resolve, reject) => {
-    if (noteContent === undefined) {
-      db.query(query)
-        .then(res => resolve(res.rows[0]))
-        .catch(err => reject(err));
-    } else {
-      db.query(query)
-        .then(res => res.rows[0])
-        .then(entry => {
-          Note.create({
-            entryId: entry.id,
-            content: noteContent,
-          })
-            .then(res => {
-              entry['note'] = res;
-              resolve(entry);
-            })
-            .catch(err => reject(err));
-        })
-        .catch(err => reject(err));
-    }
-  });
-}
-*/
 
 module.exports = {
   getAll,
