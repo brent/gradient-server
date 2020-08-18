@@ -6,6 +6,7 @@ const Token = require('../../models/Token');
 const routeHelpers = require('../../utils/routeHelpers');
 const handleResponse = routeHelpers.handleResponse;
 const errorHandler = routeHelpers.errorHandler;
+const customResponse = routeHelpers.customResponse;
 const requireAuth = require('../../utils/authHelpers').requireAuth;
 
 router.post('/signup', (req, res) => {
@@ -27,7 +28,7 @@ router.post('/signup', (req, res) => {
           },
         };
 
-        handleResponse(res, data);
+        customResponse(res, 201, data);
       })
       .catch(err => console.log(err));
   })

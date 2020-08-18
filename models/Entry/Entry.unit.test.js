@@ -104,4 +104,28 @@ describe('Entry', () => {
       }
     });
   });
+
+  describe('remove()', () => {
+    it('should be a function', () => {
+      expect(typeof Entry.remove).toBe('function');
+    });
+
+    it('should call db.query() with entry id', async () => {
+      db.query.mockResolvedValue(Promise.resolve(1));
+      await Entry.remove({ id: entryData.id });
+      const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
+      const dbQueryQueryValues = dbQueryCall[0]['values'];
+      expect(dbQueryQueryValues[0]).toBe(entryData.id);
+    });
+
+    it('should retrun an error when something is wrong', async () => {
+      const errorMessage = 'could not remove entry';
+      db.query.mockRejectedValue(new Error(errorMessage));
+      try {
+        await Entry.remove({ id: entryData.id });
+      } catch (error) {
+        expect(error.message).toBe(errorMessage);
+      }
+    });
+  });
 });
