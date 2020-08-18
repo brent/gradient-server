@@ -6,7 +6,7 @@ db.query = jest.fn();
 
 // sample entry data, according to schema
 const entryData = {
-  id: '1',
+  id: 1,
   user_id: 1,
   color: 'ff00ff',
   sentiment: 50,
