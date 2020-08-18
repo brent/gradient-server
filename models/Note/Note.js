@@ -39,7 +39,27 @@ function create({ entryId, content }) {
       .catch(err => reject(err));
   });
 }
+
+function remove({ id: noteId }) {
+  return new Promise((resolve, reject) => {
+    const removeSQL = `
+      DELETE FROM ${tableName}
+      WHERE id=$1;
+    `;
+
+    const query = {
+      text: removeSQL,
+      values: [noteId],
+    }
+
+    db.query(query)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+}
+
 module.exports = {
   getOne,
   create,
+  remove,
 }

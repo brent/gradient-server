@@ -10,7 +10,7 @@ function getAll(userId = null) {
 
     if (userId) {
       querySQL = `
-        SELECT entries.*, notes.content
+        SELECT entries.*, notes.id note_id, notes.content note_content
         FROM entries
         LEFT JOIN notes ON entries.id = notes.entry_id
         WHERE entries.user_id = $1
@@ -23,7 +23,7 @@ function getAll(userId = null) {
       };
     } else {
       querySQL = `
-        SELECT entries.*, notes.content
+        SELECT entries.*, notes.id note_id, notes.content note_content
         FROM entries
         LEFT JOIN notes ON entries.id = notes.entry_id
         ORDER BY entries.created_at DESC

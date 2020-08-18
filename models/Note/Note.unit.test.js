@@ -82,4 +82,30 @@ describe('Note', () => {
       expect(typeof res).not.toBe('Array');
     });
   });
+
+  describe('remove()', () => {
+    it('should be a function', () => {
+      expect(typeof Note.remove).toBe('function');
+    });
+
+    // this test (and others like it) pass 
+    // even if the function body is empty...
+    it('should call db.query() with note id', async () => {
+      db.query.mockResolvedValue(Promise.resolve(1));
+      const res = await Note.remove({ id: noteData.id });
+      const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
+      const dbQueryQueryValues = dbQueryCall[0]['values'];
+      expect(dbQueryQueryValues[0]).toBe(noteData.id);
+    });
+
+    it('should retrun an error when something is wrong', async () => {
+      const errorMessage = 'could not remove note';
+      db.query.mockRejectedValue(new Error(errorMessage));
+      try {
+        await Note.remove({ id: noteData.id });
+      } catch (error) {
+        expect(error.message).toBe(errorMessage);
+      }
+    });
+  });
 });
