@@ -21,7 +21,7 @@ describe('Entry', () => {
     });
 
     it('should call db.query() with supplied id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(entryData)] });
+      db.query.mockResolvedValue({ rows: [entryData] });
       const res = await Entry.getAll(1);
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -29,7 +29,7 @@ describe('Entry', () => {
     });
 
     it('should call db.query() with no id if not supplied', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(entryData)] });
+      db.query.mockResolvedValue({ rows: [entryData] });
       const res = await Entry.getAll();
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -53,7 +53,7 @@ describe('Entry', () => {
     });
 
     it('should call db.query() with supplied id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(entryData)] });
+      db.query.mockResolvedValue({ rows: [entryData] });
       const res = await Entry.getOne(entryData.id);
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -77,7 +77,7 @@ describe('Entry', () => {
     });
 
     it('should call db.query() with supplied user entry data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(entryData)] });
+      db.query.mockResolvedValue({ rows: [entryData] });
       const res = await Entry.create({
         userId: entryData.user_id,
         color: entryData.color,
@@ -111,7 +111,7 @@ describe('Entry', () => {
     });
 
     it('should call db.query() with entry id', async () => {
-      db.query.mockResolvedValue(Promise.resolve(1));
+      db.query.mockResolvedValue(1);
       await Entry.remove({ id: entryData.id });
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -122,7 +122,7 @@ describe('Entry', () => {
       const errorMessage = 'could not remove entry';
       db.query.mockRejectedValue(new Error(errorMessage));
       try {
-        await Entry.remove({ id: entryData.id });
+        await Entry.remove(entryData.id);
       } catch (error) {
         expect(error.message).toBe(errorMessage);
       }

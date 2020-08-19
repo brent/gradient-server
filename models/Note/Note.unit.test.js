@@ -19,7 +19,7 @@ describe('Note', () => {
     });
 
     it('should call db.query() with passed id', async () => {
-      db.query.mockResolvedValueOnce({ rows: [Promise.resolve(noteData)] });
+      db.query.mockResolvedValueOnce({ rows: [noteData] });
       const res = await Note.getOne(noteData.id);
       expect(db.query).toHaveBeenCalled();
       expect(res.id).toBe(noteData.id);
@@ -38,7 +38,7 @@ describe('Note', () => {
     });
 
     it('should not return an array', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(noteData)] });
+      db.query.mockResolvedValue({ rows: [noteData] });
       const res = await Note.getOne(noteData.id);
       expect(typeof res).not.toBe('Array');
     });
@@ -50,7 +50,7 @@ describe('Note', () => {
     });
 
     it('should call db.query() with note data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(noteData)] });
+      db.query.mockResolvedValue({ rows: [noteData] });
       const res = await Note.create({ 
         entryId: noteData.entryId,
         content: noteData.content,
@@ -74,7 +74,7 @@ describe('Note', () => {
     });
 
     it('should not return an array', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(noteData)] });
+      db.query.mockResolvedValue({ rows: [noteData] });
       const res = await Note.create({ 
         entryId: noteData.entryId,
         content: noteData.content,
@@ -91,7 +91,7 @@ describe('Note', () => {
     // this test (and others like it) pass 
     // even if the function body is empty...
     it('should call db.query() with note id', async () => {
-      db.query.mockResolvedValue(Promise.resolve(1));
+      db.query.mockResolvedValue(1);
       const res = await Note.remove({ id: noteData.id });
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];

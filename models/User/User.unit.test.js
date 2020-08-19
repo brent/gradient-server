@@ -17,13 +17,13 @@ describe('User', () => {
     });
 
     it('should return a single result', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.getOne(userData.id);
       expect(result.length).toBeUndefined();
     });
 
     it('should call db.query() with passed id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.getOne(userData.id);
       const getOneCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const getOneCallValues = getOneCall[0]['values'];
@@ -47,13 +47,13 @@ describe('User', () => {
     });
 
     it('should return a single result', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.findByEmail(userData.email);
       expect(result.length).toBeUndefined();
     });
 
     it('should call db.query() with passed id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.findByEmail(userData.email);
       const findByEmailCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const findByEmailCallValues = findByEmailCall[0]['values'];
@@ -77,7 +77,7 @@ describe('User', () => {
     });
 
     it('should return a single result', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.create({
         email: userData.email,
         password: userData.password,
@@ -86,7 +86,7 @@ describe('User', () => {
     });
 
     it('should call db.query() with passed data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.create({
         email: userData.email,
         password: userData.password,
@@ -110,7 +110,7 @@ describe('User', () => {
     });
 
     it('should return a single result', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.update({
         id: userData.id,
         email: userData.email,
@@ -120,7 +120,7 @@ describe('User', () => {
     });
 
     it('should call db.query() with passed data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const result = await User.update({
         id: userData.id,
         email: userData.email,
@@ -140,7 +140,7 @@ describe('User', () => {
     });
 
     it('should call db.query()', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(userData)] });
+      db.query.mockResolvedValue({ rows: [userData] });
       const res = await User.getAll();
       expect(db.query).toHaveBeenCalled();
     });
@@ -168,7 +168,7 @@ describe('User', () => {
     });
 
     it('should call db.query() with user id', async () => {
-      db.query.mockResolvedValue(Promise.resolve(1));
+      db.query.mockResolvedValue(1);
       const res = await User.remove({ id: userData.id });
       const removeCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const removeCallValues = removeCall[0]['values'];

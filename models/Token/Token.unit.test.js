@@ -22,7 +22,7 @@ describe('Token', () => {
     });
 
     it('should call db.query() with supplied token data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(tokenData.token)] });
+      db.query.mockResolvedValue({ rows: [tokenData.token] });
       const res = await Token.save(tokenData.user_id);
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -92,7 +92,7 @@ describe('Token', () => {
     });
 
     it('should call db.query() with user id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(tokenData.token)] });
+      db.query.mockResolvedValue({ rows: [tokenData.token] });
       const response = await Token.findTokenForUser(tokenData.id);
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];

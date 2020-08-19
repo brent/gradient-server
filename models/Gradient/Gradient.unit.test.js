@@ -22,7 +22,7 @@ describe('Gradient', () => {
     });
 
     it('should call db.query() with supplied id', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(gradientData)] });
+      db.query.mockResolvedValue({ rows: [gradientData] });
       const res = await Gradient.getOne(gradientData.id);
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
@@ -46,7 +46,7 @@ describe('Gradient', () => {
     });
 
     it('should call db.query() with supplied Gradient data', async () => {
-      db.query.mockResolvedValue({ rows: [Promise.resolve(gradientData)] });
+      db.query.mockResolvedValue({ rows: [gradientData] });
       const res = await Gradient.create({
         name: gradientData.name,
         start: gradientData.start_color,
