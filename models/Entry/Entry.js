@@ -101,13 +101,13 @@ function remove({ id: entryId }) {
   return new Promise((resolve, reject) => {
     const removeSQL = `
       DELETE FROM ${tableName}
-      WHERE id=$1;
+      WHERE id = $1;
     `;
 
     const query = {
       text: removeSQL,
       values: [entryId],
-    }
+    };
 
     db.query(query)
       .then(res => resolve(res))
