@@ -112,9 +112,10 @@ describe('Entry', () => {
 
     it('should call db.query() with entry id', async () => {
       db.query.mockResolvedValue(1);
-      await Entry.remove({ id: entryData.id });
+      const res = await Entry.remove({ id: entryData.id });
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
+      expect(dbQueryQueryValues.length).toBe(1);
       expect(dbQueryQueryValues[0]).toBe(entryData.id);
     });
 

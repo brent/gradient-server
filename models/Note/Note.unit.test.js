@@ -88,13 +88,12 @@ describe('Note', () => {
       expect(typeof Note.remove).toBe('function');
     });
 
-    // this test (and others like it) pass 
-    // even if the function body is empty...
     it('should call db.query() with note id', async () => {
       db.query.mockResolvedValue(1);
       const res = await Note.remove({ id: noteData.id });
       const dbQueryCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const dbQueryQueryValues = dbQueryCall[0]['values'];
+      expect(dbQueryQueryValues.length).toBe(1);
       expect(dbQueryQueryValues[0]).toBe(noteData.id);
     });
 

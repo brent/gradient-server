@@ -172,6 +172,7 @@ describe('User', () => {
       const res = await User.remove({ id: userData.id });
       const removeCall = db.query.mock.calls[db.query.mock.calls.length - 1];
       const removeCallValues = removeCall[0]['values'];
+      expect(removeCallValues.length).toBe(1);
       expect(removeCallValues[0]).toBe(1);
     });
 
