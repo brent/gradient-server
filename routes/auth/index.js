@@ -6,6 +6,7 @@ const Token = require('../../models/Token');
 const routeHelpers = require('../../utils/routeHelpers');
 const handleResponse = routeHelpers.handleResponse;
 const errorHandler = routeHelpers.errorHandler;
+const customResponse = routeHelpers.customResponse;
 const requireAuth = require('../../utils/authHelpers').requireAuth;
 
 router.post('/signup', (req, res) => {
@@ -15,7 +16,7 @@ router.post('/signup', (req, res) => {
   };
 
   User.create(user).then(user => {
-    Token.saveTokenForUser(user.id)
+    Token.save(user.id)
       .then((res) => res.token)
       .then((refreshToken) => {
         const jwt = Token.generateAccessToken(user);
@@ -27,7 +28,7 @@ router.post('/signup', (req, res) => {
           },
         };
 
-        handleResponse(res, data);
+        customResponse(res, 201, data);
       })
       .catch(err => console.log(err));
   })
@@ -60,7 +61,7 @@ router.post('/login', (req, res) => {
         handleResponse(res, data);
       })
       .catch(err => {
-        Token.saveTokenForUser(user.id)
+        Token.save(user.id)
           .then(res => res.token)
           .then(refreshToken => {
             const jwt = Token.generateAccessToken(user);
