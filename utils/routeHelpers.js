@@ -9,7 +9,6 @@ const customResponse = function(res, status, data) {
 }
 
 const errorHandler = function(err, req, res, next) {
-  console.log(err);
   const status = err.statusCode || 500;
   res.status(status).json({
     'error': err.message,
