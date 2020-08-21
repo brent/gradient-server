@@ -32,7 +32,7 @@ function generateRefreshToken() {
 
 function generateAccessToken(tokenData) {
   const params = { ...tokenData };
-  const token = jwt.sign(params, JWT_SECRET, { expiresIn: 300 });
+  const token = jwt.sign(params, JWT_SECRET, { expiresIn: 10 });
   return token;
 }
 
@@ -68,16 +68,16 @@ function findTokenForUser(userId) {
 }
 
 function updateRefreshToken(accessToken, refreshToken) {
-  const { userId } = jwt.decode(accessToken);
+  const { id: userId } = jwt.decode(accessToken);
 
   return new Promise((resolve, reject) => {
-    const newToken = Token.generateRefreshToken();
+    const newToken = generateRefreshToken();
 
     const updateRefreshTokenSQL = `
       UPDATE tokens
       SET token = $1
-      WHERE token = $2
-      AND user_id = $3
+      WHERE user_id = $3
+      AND token = $2
       RETURNING token, user_id;
     `;
 

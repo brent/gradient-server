@@ -106,6 +106,33 @@ describe('api', () => {
         expect(refreshToken).toBeDefined();
       });
     });
+
+    describe('POST /token', () => {
+      let response;
+
+      beforeAll(async () => {
+        response = await request(app)
+          .post(`${BASE_URL}/auth/token`)
+          .send({
+            access: accessToken,
+            refreshToken: refreshToken,
+          });
+      });
+
+      it('should respond with a 200', () => {
+        expect(response.status).toBe(200);
+      });
+
+      test('response body should include new access token', () => {
+        expect(response.body.access).toBeDefined();
+        expect(response.body.access).not.toBe(accessToken);
+      });
+
+      test('response body should include new refesh token', () => {
+        expect(response.body.refresh).toBeDefined();
+        expect(response.body.refresh).not.toBe(refreshToken);
+      });
+    });
   });
 
   describe('private routes', () => {
