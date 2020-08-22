@@ -32,7 +32,7 @@ function generateRefreshToken() {
 
 function generateAccessToken(tokenData) {
   const params = { ...tokenData };
-  const token = jwt.sign(params, JWT_SECRET, { expiresIn: 10 });
+  const token = jwt.sign(params, JWT_SECRET, { expiresIn: 300 });
   return token;
 }
 
