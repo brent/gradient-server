@@ -1,7 +1,7 @@
-const db = require('../../db');
-const Entry = require('./Entry');
+const db = require('../db');
+const Entry = require('../models/Entry');
 
-jest.mock('../../db');
+jest.mock('../db');
 db.query = jest.fn();
 
 // sample entry data, according to schema

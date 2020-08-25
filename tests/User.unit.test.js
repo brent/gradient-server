@@ -1,7 +1,7 @@
-const db = require('../../db');
-const User = require('./User');
+const db = require('../db');
+const User = require('../models/User');
 
-jest.mock('../../db');
+jest.mock('../db');
 
 const userData = {
   id: 1,

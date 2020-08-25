@@ -1,7 +1,7 @@
-const db = require('../../db');
-const Token = require('./Token');
+const db = require('../db');
+const Token = require('../models/Token');
 
-jest.mock('../../db');
+jest.mock('../db');
 
 const tokenData = {
   id: '1',

@@ -1,7 +1,7 @@
-const db = require('../../db');
-const Note = require('./Note');
+const db = require('../db');
+const Note = require('../models/Note');
 
-jest.mock('../../db');
+jest.mock('../db');
 
 // sample note data, according to schema
 const noteData = { 

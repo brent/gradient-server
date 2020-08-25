@@ -1,7 +1,7 @@
-const db = require('../../db');
-const Gradient = require('./Gradient');
+const db = require('../db');
+const Gradient = require('../models/Gradient');
 
-jest.mock('../../db');
+jest.mock('../db');
 
 const gradientData = {
   id: '1',

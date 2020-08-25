@@ -1,9 +1,9 @@
 const request = require('supertest');
-const app = require('../../app');
+const app = require('../app');
 
-const User = require('../../models/User');
-const Entry = require('../../models/Entry');
-const Note = require('../../models/Note');
+const User = require('../models/User');
+const Entry = require('../models/Entry');
+const Note = require('../models/Note');
 
 const BASE_URL = '/api/v1';
 
