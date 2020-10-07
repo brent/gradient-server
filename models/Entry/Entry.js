@@ -61,17 +61,17 @@ function getOne(entryId) {
     });
 }
 
-function create({ userId, color, sentiment, noteContent = null }) {
+function create({ userId, color, sentiment, date, noteContent = null }) {
   return new Promise((resolve, reject) => {
     const createForUserSQL = `
-      INSERT INTO entries (user_id, color, sentiment)
-      VALUES ($1, $2, $3)
+      INSERT INTO entries (user_id, color, sentiment, date)
+      VALUES ($1, $2, $3, TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'))
       RETURNING *;
     `;
 
     const query = {
       text: createForUserSQL,
-      values: [userId, color, sentiment],
+      values: [userId, color, sentiment, date],
     };
 
     if (noteContent) {

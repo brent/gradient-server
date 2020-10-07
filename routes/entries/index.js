@@ -21,10 +21,13 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   const userId = req.decoded.id;
 
+  console.log('date', req.body.date);
+
   Entry.create({
     userId: userId,
     color: req.body.color,
     sentiment: req.body.sentiment,
+    date: req.body.date,
     noteContent: req.body.noteContent,
   })
     .then(data => customResponse(res, 201, data))
