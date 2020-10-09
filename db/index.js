@@ -75,6 +75,7 @@ const createEntriesTableQuery = `
     user_id INT NOT NULL,
     color TEXT NOT NULL,
     sentiment INT NOT NULL,
+    date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     PRIMARY KEY (id),

@@ -187,6 +187,7 @@ describe('api', () => {
         expect(createEntryResponse.body.user_id).toBeDefined();
         expect(createEntryResponse.body.color).toBeDefined();
         expect(createEntryResponse.body.sentiment).toBeDefined();
+        expect(createEntryResponse.body.date).toBeDefined();
       });
 
       it('should create a note if supplied one', () => {
