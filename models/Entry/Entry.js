@@ -43,20 +43,159 @@ function getAll(userId = null) {
 
 function getOne(entryId) {
     return new Promise((resolve, reject) => {
-      const getOneSQL = `
-        SELECT *
-        FROM entries
-        WHERE id = $1
-        LIMIT 1;
-      `;
+      const getOneEntry = async (entryId) => {
+        const getOneSQL = `
+          SELECT entries.*, notes.id note_id, notes.content note_content
+          FROM entries
+          LEFT JOIN notes ON entries.id = notes.entry_id
+          WHERE entries.id = $1
+          LIMIT 1;
+        `;
 
-      const query = {
-        text: getOneSQL,
-        values: [entryId],
+        const getOneQuery = {
+          text: getOneSQL,
+          values: [entryId],
+        };
+
+        try {
+          const entryResult = await db.query(getOneQuery);
+          const entry = entryResult.rows[0];
+          return entry;
+        } catch (err) {
+          throw err;
+        }
       };
 
-      db.query(query)
-        .then(res => resolve(res.rows[0]))
+      const getMonthAvgSentimentForEntry = async ({ entry, insights = {} }) => {
+        const monthAvgSentimentSQL = `
+          SELECT AVG(sentiment)::numeric(10,0)
+          FROM entries
+          WHERE user_id = $1
+          AND EXTRACT(MONTH FROM date) = $2;
+        `;
+
+        const date = new Date(entry.date);
+        const month = date.getMonth() + 1;
+
+        const monthAvgSentimentQuery = {
+          text: monthAvgSentimentSQL,
+          values: [entry.user_id, month],
+        }
+
+        try {
+          const monthAvgSentimentResult = await db.query(monthAvgSentimentQuery);
+          const monthAvgSentiment = monthAvgSentimentResult.rows[0]['avg'];
+          let res = {
+            entry: entry,
+            insights: {
+              monthAvgSentiment: monthAvgSentiment,
+            },
+          };
+
+          if (Object.keys(insights).length !== 0) {
+            res = {
+              ...res,
+              insights: {
+                ...res.insights,
+                ...insights,
+              }
+            }
+          }
+
+          return res;
+        } catch (err) {
+          throw err;
+        }
+      };
+
+      const getSimilarDaysThisMonthForEntry = async ({ entry, insights = {}, range = 3 }) => {
+        const similarDaysThisMonthSQL = `
+          SELECT entries.*, notes.id note_id, notes.content note_content
+          FROM entries
+          LEFT JOIN notes ON entries.id = notes.entry_id
+          WHERE sentiment BETWEEN $3 AND $4
+          AND entries.user_id = $1
+          AND EXTRACT(MONTH FROM entries.date) = $2;
+        `;
+
+        const date = new Date(entry.date);
+        const month = date.getMonth() + 1;
+        const sentimentRange = [
+          entry.sentiment - range,
+          entry.sentiment + range,
+        ];
+
+        const similarDaysThisMonthQuery = {
+          text: similarDaysThisMonthSQL,
+          values: [
+            entry.user_id,
+            month,
+            sentimentRange[0],
+            sentimentRange[1]],
+        }
+        
+        try {
+          const similarDaysThisMonthResult = await db.query(similarDaysThisMonthQuery);
+          const similarEntriesThisMonth = similarDaysThisMonthResult.rows;
+          let res = {
+            entry: entry,
+            insights: {
+              similarEntriesThisMonth: similarEntriesThisMonth,
+            },
+          };
+
+          if (Object.keys(insights).length !== 0) {
+            res = {
+              ...res,
+              insights: {
+                ...res.insights,
+                ...insights,
+              }
+            }
+          }
+
+          return res;
+        } catch (err) {
+          throw err;
+        }
+      };
+
+      const getAllSentimentForUser = async (userId) => {
+        const sentimentAllTimeSQL = `
+          SELECT sentiment, date
+          FROM entries
+          WHERE user_id = $1
+          ORDER BY date DESC;
+        `;
+
+        const getAllSentimentQuery = {
+          text: sentimentAllTimeSQL,
+          values: [userId],
+        };
+
+        try {
+          const allSentimentResults = await db.query(getAllSentimentQuery);
+          const allSentiment = allSentimentResults.rows;
+          return allSentiment;
+        } catch (err) {
+          throw err;
+        }
+      };
+
+      getOneEntry(entryId)
+        .then(entry => getMonthAvgSentimentForEntry({ entry }))
+        .then(({ entry, insights }) => getSimilarDaysThisMonthForEntry({ entry, insights }))
+        .then(res => {
+          return getAllSentimentForUser(res.entry.user_id)
+            .then(allSentiment => ({
+              ...res,
+              insights: {
+                ...res.insights,
+                allSentiment: allSentiment,
+              },
+            }));
+        })
+        .then(res => resolve(res))
         .catch(err => reject(err));
     });
 }
