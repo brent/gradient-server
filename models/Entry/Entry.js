@@ -41,6 +41,40 @@ function getAll(userId = null) {
   });
 }
 
+function getEntriesForMonth(userId, month) {
+  return new Promise((resolve, reject) => {
+    const getEntries = async (userId, month) => {
+      const querySQL = `
+        SELECT entries.*, notes.id note_id, notes.content note_content
+        FROM entries
+        LEFT JOIN notes ON entries.id = notes.entry_id
+        WHERE entries.user_id = $1
+        AND EXTRACT(MONTH FROM date) = $2;
+      `;
+
+      const query = {
+        text: querySQL,
+        values: [userId, month],
+      };
+
+      try {
+        const entriesResult = await db.query(query);
+        const entries = entriesResult.rows;
+        return entries;
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    getEntries(userId, month)
+      .then(res => {
+        console.log('res', res);
+        resolve(res);
+      })
+      .catch(err => reject(err));
+  });
+}
+
 function getOne(entryId) {
     return new Promise((resolve, reject) => {
       const getOneEntry = async (entryId) => {
@@ -257,6 +291,7 @@ function remove({ id: entryId }) {
 module.exports = {
   getAll,
   getOne,
+  getEntriesForMonth,
   create,
   remove,
 }

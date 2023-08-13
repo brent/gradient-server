@@ -18,6 +18,15 @@ router.get('/:id', (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.get('/month/:year/:month', (req, res) => {
+  console.log('id', req.decoded.id);
+  console.log('year', req.params.year);
+  console.log('month', req.params.month);
+  Entry.getEntriesForMonth(req.decoded.id, req.params.month)
+    .then(data => handleResponse(res, data))
+    .catch(err => console.log(err));
+});
+
 router.post('/', (req, res) => {
   const userId = req.decoded.id;
 
